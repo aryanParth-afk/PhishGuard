@@ -166,6 +166,22 @@ st.markdown("""
         margin: 0 auto 2rem auto;
         max-width: 760px;
     }
+         [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        color: #f8fafc;
+        letter-spacing: -0.01em;
+    }
+
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] li,
+    [data-testid="stSidebar"] label {
+        color: #cbd5e1;
+        line-height: 1.55;
+    }
+
+    [data-testid="stSidebar"] .stCaption {
+        color: #94a3b8;
+    }       
 
     [data-testid="stSidebar"] {
         background: #0f172a;
@@ -224,18 +240,43 @@ def draw_gauge(score):
     return fig
 
 
-# --- SIDEBAR (College Project Info) ---
+# --- SIDEBAR ---
 with st.sidebar:
-    st.header("📌 Project Details")
-    st.markdown("""
-    **Project Name:** PhishGuard  
-    **Field:** Cyber Security / ML  
-    **Algorithm:** Passive-Aggressive Classifier  
-    **Dataset:** UCI SMS Spam Collection  
-    """)
+    st.markdown("## 🛡️ PhishGuard")
+    st.caption("Phishing detection demo for email, SMS, and URL screening")
+
     st.divider()
-    st.markdown("### 👨‍💻 Developed By:")
-    st.write("ARYAN PARTH")
+
+    st.markdown("### Project Overview")
+    st.markdown("""
+    **Category:** Cybersecurity / Machine Learning  
+    **Framework:** Streamlit  
+    **Model:** Passive-Aggressive Classifier  
+    **Dataset:** UCI SMS Spam Collection
+    """)
+
+    st.divider()
+
+    st.markdown("### How to Use")
+    st.markdown("""
+    1. Select **Email**, **SMS**, or **URL Heuristics**  
+    2. Enter the content you want to inspect  
+    3. Review the risk result and explanation
+    """)
+
+    st.divider()
+
+    st.markdown("### Analysis Notes")
+    st.markdown("""
+    - Email and SMS checks are model-based  
+    - URL screening is rule-based in the current version  
+    - Results should be treated as screening support, not final proof
+    """)
+
+    st.divider()
+
+    st.markdown("### Developer")
+    st.markdown("**Aryan Parth**")
 
 
 # --- MAIN UI ---
