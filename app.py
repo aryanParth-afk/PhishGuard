@@ -40,6 +40,95 @@ st.markdown("""
         padding-bottom: 2rem;
         max-width: 1200px;
     }
+         .hero-card {
+        max-width: 980px;
+        margin: 0 auto 1.75rem auto;
+        padding: 1.7rem 1.8rem 1.35rem 1.8rem;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(17, 24, 39, 0.80) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .hero-inner {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.28);
+        color: #86efac;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .hero-title {
+        margin: 0 0 0.7rem 0;
+        color: #f8fafc;
+        font-size: 2.7rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.12;
+        text-align: center;
+    }
+
+    .hero-subline {
+        margin: 0 0 1.2rem 0;
+        color: #cbd5e1;
+        font-size: 1.02rem;
+        line-height: 1.75;
+        text-align: center;
+        max-width: 620px;
+    }
+
+    .hero-meta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-top: 0.1rem;
+    }
+
+    .hero-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.10);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        color: #dbeafe;
+        font-size: 0.84rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .hero-card {
+            padding: 1.35rem 1rem 1.1rem 1rem;
+            border-radius: 18px;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subline {
+            font-size: 0.96rem;
+            max-width: 100%;
+        }
+    } 
     .hero-wrap {
         max-width: 900px;
         margin: 0 auto 1.25rem auto;
@@ -50,17 +139,12 @@ st.markdown("""
         padding-top: 0.5rem;
         padding-bottom: 0.25rem;
     }
-            
-    h1 {
-        text-align: center;
-        color: #f8fafc !important;
-        font-size: 2.2rem !important;
-        font-weight: 800 !important;
-        letter-spacing: -0.02em;
-        margin-top: 0.2rem !important;
-        margin-bottom: 0.35rem !important;
-        line-height: 1.2 !important;
-    }       
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem !important;
+        }
+    }             
 
     .main-title {
         font-family: 'Helvetica', sans-serif;
@@ -157,10 +241,19 @@ with st.sidebar:
 # --- MAIN UI ---
 st.markdown("""
 <div class="hero-spacer"></div>
-<div class="hero-wrap">
-    <h1>PhishGuard: Phishing Detection System</h1>
-    <div style="text-align: center; width: 100%;">
-        <p class="project-sub">A Machine Learning approach to identifying malicious communications</p>
+<div class="hero-card">
+    <div class="hero-inner">
+        <div class="hero-badge">Cybersecurity Portfolio Project</div>
+        <div class="hero-title">PhishGuard: Phishing Detection System</div>
+        <div class="hero-subline">
+            Analyze suspicious email text, SMS content, and URLs through a cleaner phishing review interface
+            for quick screening and clearer presentation.
+        </div>
+        <div class="hero-meta">
+            <span class="hero-chip">Streamlit App</span>
+            <span class="hero-chip">TF-IDF + Passive-Aggressive</span>
+            <span class="hero-chip">Email • SMS • URL Review</span>
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
