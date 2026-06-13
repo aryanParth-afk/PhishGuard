@@ -15,26 +15,100 @@ from services.model_service import (
 
 
 # --- PAGE SETUP ---
-st.set_page_config(page_title="PhishGuard", layout="wide")
+st.set_page_config(
+    page_title="PhishGuard | Phishing Detection System",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 
-# --- CLEAN ACADEMIC CSS ---
+# --- TOP-LEVEL UI STYLING ---
 st.markdown("""
-    <style>
-    .stApp { background-color: #0e1117; color: #ffffff; }
+<style>
+    .stApp {
+        background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+        color: #e5eef8;
+    }
+
+    header[data-testid="stHeader"] {
+        background: transparent;
+    }
+
+    .block-container {
+        padding-top: 2.5rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
+    }
+    .hero-wrap {
+        max-width: 900px;
+        margin: 0 auto 1.25rem auto;
+        text-align: center;
+    }
+                    
+    .hero-spacer {
+        padding-top: 0.5rem;
+        padding-bottom: 0.25rem;
+    }
+            
+    h1 {
+        text-align: center;
+        color: #f8fafc !important;
+        font-size: 2.2rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em;
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.35rem !important;
+        line-height: 1.2 !important;
+    }       
+
     .main-title {
         font-family: 'Helvetica', sans-serif;
-        color: #00d4ff;
-        font-size: 2.5rem;
-        font-weight: bold;
+        color: #f8fafc;
+        font-size: 2.4rem;
+        font-weight: 800;
         text-align: center;
-        margin-bottom: 10px;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
     }
+            
     .project-sub {
-        text-align: center;
-        color: #8892b0;
-        font-style: italic;
-        margin-bottom: 30px;
+        display: inline-block;
+        text-align: center !important;
+        color: #94a3b8;
+        font-size: 1.05rem;
+        margin: 0 auto 2rem auto;
+        max-width: 760px;
+    }
+
+    [data-testid="stSidebar"] {
+        background: #0f172a;
+        border-right: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    [data-testid="stSidebar"] .block-container {
+        padding-top: 1.5rem;
+    }
+
+    div[data-testid="stTabs"] button {
+        font-weight: 600;
+    }
+
+    div[data-testid="stButton"] > button {
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2.1rem;
+        }
+
+        .project-sub {
+            font-size: 0.98rem;
+        }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -81,8 +155,15 @@ with st.sidebar:
 
 
 # --- MAIN UI ---
-st.markdown('<p class="main-title">PhishGuard: Phishing Detection System</p>', unsafe_allow_html=True)
-st.markdown('<p class="project-sub">A Machine Learning approach to identifying malicious communications</p>', unsafe_allow_html=True)
+st.markdown("""
+<div class="hero-spacer"></div>
+<div class="hero-wrap">
+    <h1>PhishGuard: Phishing Detection System</h1>
+    <div style="text-align: center; width: 100%;">
+        <p class="project-sub">A Machine Learning approach to identifying malicious communications</p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 tabs = st.tabs(["📧 Email Analysis", "💬 SMS Analysis", "🔗 URL Heuristics"])
 
