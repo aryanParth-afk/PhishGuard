@@ -1,8 +1,17 @@
 import streamlit as st
-import joblib
 import plotly.graph_objects as go
-import re
-from urllib.parse import urlparse
+
+from utils.helpers import (
+    normalize_text,
+    is_valid_url,
+    get_result_label,
+    get_result_reason,
+)
+from services.model_service import (
+    load_model,
+    analyze_text,
+    analyze_url,
+)
 
 
 # --- PAGE SETUP ---
@@ -31,62 +40,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-# --- LOAD MODEL ---
-@st.cache_resource
-def load_model():
-    return joblib.load('phishguard_model.pkl')
-
-
 model = load_model()
-
-
-# --- HELPERS ---
-def normalize_text(text):
-    return re.sub(r"\s+", " ", text.strip())
-
-
-def is_valid_url(text):
-    try:
-        parsed = urlparse(text.strip())
-        return parsed.scheme in ("http", "https") and bool(parsed.netloc)
-    except Exception:
-        return False
-
-
-def score_to_risk(score_raw):
-    risk = 50 + (score_raw * 15)
-    return max(0, min(100, risk))
-
-
-def get_result_label(risk):
-    if risk > 70:
-        return "malicious"
-    elif risk > 30:
-        return "suspicious"
-    return "safe"
-
-
-def get_result_reason(mode, user_data, risk):
-    if mode in ["email", "sms"]:
-        if risk > 70:
-            return "The text contains patterns commonly associated with phishing or spam-like communication."
-        elif risk > 30:
-            return "The text includes some suspicious language patterns, so it should be reviewed carefully."
-        return "The text appears relatively benign based on the model's learned text patterns."
-    else:
-        reasons = []
-        lower_url = user_data.lower()
-
-        if "https" not in lower_url:
-            reasons.append("it does not use HTTPS")
-        if len(user_data) > 60:
-            reasons.append("the URL is unusually long")
-        if any(x in lower_url for x in ["bit.ly", "verify", "update", "login"]):
-            reasons.append("it contains commonly abused phishing keywords")
-
-        if reasons:
-            return "This URL was flagged because " + ", ".join(reasons) + "."
-        return "This URL did not trigger the current rule-based screening checks."
 
 
 # --- GAUGE ---
@@ -167,26 +121,13 @@ for i, mode in enumerate(["email", "sms", "url"]):
                 with st.spinner("Model processing..."):
                     try:
                         if mode in ["email", "sms"]:
-                            score_raw = model.decision_function([clean_input])[0]
-                            risk = score_to_risk(score_raw)
-                            reason = get_result_reason(mode, clean_input, risk)
-                            trust_note = "This score is a model-based risk estimate, not a guaranteed probability."
-
+                            risk, reason, trust_note = analyze_text(model, clean_input, mode, get_result_reason)
                         else:
                             if not is_valid_url(clean_input):
                                 st.warning("Please enter a valid URL starting with http:// or https://")
                                 st.stop()
 
-                            risk = 10
-                            if "https" not in clean_input.lower():
-                                risk += 30
-                            if len(clean_input) > 60:
-                                risk += 20
-                            if any(x in clean_input.lower() for x in ['bit.ly', 'verify', 'update', 'login']):
-                                risk += 40
-
-                            reason = get_result_reason(mode, clean_input, risk)
-                            trust_note = "This score is currently based on rule-based URL screening, not full model confidence."
+                            risk, reason, trust_note = analyze_url(clean_input, get_result_reason)
 
                         st.plotly_chart(draw_gauge(risk), use_container_width=True)
 
@@ -212,5 +153,5 @@ st.markdown("""
 ### 📊 Methodology
 This project utilizes a **TF-IDF (Term Frequency-Inverse Document Frequency)** vectorization method to convert text into numerical features, followed by a **Passive-Aggressive Classifier**. This specific algorithm was chosen for its high efficiency in binary text classification tasks.
 
-**Note:** Email and SMS analysis are model-based. URL analysis currently uses rule-based screening in this Phase 1 version.
+**Note:** Email and SMS analysis are model-based. URL analysis currently uses rule-based screening in this Phase 2 version.
 """)
