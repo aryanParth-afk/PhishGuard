@@ -4,7 +4,7 @@ PhishGuard is a Streamlit-based phishing detection app that helps users assess w
 
 ## Live Demo
 
-[Live App](https://your-streamlit-link-here)
+[Live App](https://phishguard-pyuqhxgtkew9xefue6xbnb.streamlit.app/)
 
 ## Preview
 
