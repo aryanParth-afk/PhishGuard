@@ -13,7 +13,6 @@ from services.model_service import (
     analyze_url,
 )
 
-
 # --- PAGE SETUP ---
 st.set_page_config(
     page_title="PhishGuard | Phishing Detection System",
@@ -21,7 +20,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
 
 # --- TOP-LEVEL UI STYLING ---
 st.markdown("""
@@ -36,13 +34,14 @@ st.markdown("""
     }
 
     .block-container {
-        padding-top: 2.5rem;
+        padding-top: 2.2rem;
         padding-bottom: 2rem;
         max-width: 1200px;
     }
-         .hero-card {
+
+    .hero-card {
         max-width: 980px;
-        margin: 0 auto 1.75rem auto;
+        margin: 0 auto 1.5rem auto;
         padding: 1.7rem 1.8rem 1.35rem 1.8rem;
         border-radius: 22px;
         background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(17, 24, 39, 0.80) 100%);
@@ -114,59 +113,21 @@ st.markdown("""
         font-weight: 600;
     }
 
-    @media (max-width: 768px) {
-        .hero-card {
-            padding: 1.35rem 1rem 1.1rem 1rem;
-            border-radius: 18px;
-        }
-
-        .hero-title {
-            font-size: 2rem;
-        }
-
-        .hero-subline {
-            font-size: 0.96rem;
-            max-width: 100%;
-        }
-    } 
-    .hero-wrap {
-        max-width: 900px;
-        margin: 0 auto 1.25rem auto;
-        text-align: center;
-    }
-                    
     .hero-spacer {
-        padding-top: 0.5rem;
-        padding-bottom: 0.25rem;
+        padding-top: 0.35rem;
+        padding-bottom: 0.2rem;
     }
 
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 2rem !important;
-        }
-    }             
+    [data-testid="stSidebar"] {
+        background: #0f172a;
+        border-right: 1px solid rgba(148, 163, 184, 0.12);
+    }
 
-    .main-title {
-        font-family: 'Helvetica', sans-serif;
-        color: #f8fafc;
-        font-size: 2.4rem;
-        font-weight: 800;
-        text-align: center;
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.03em;
-        line-height: 1.1;
+    [data-testid="stSidebar"] .block-container {
+        padding-top: 1.5rem;
     }
-            
-    .project-sub {
-        display: inline-block;
-        text-align: center !important;
-        color: #94a3b8;
-        font-size: 1.05rem;
-        margin: 0 auto 2rem auto;
-        max-width: 760px;
-    }
-         [data-testid="stSidebar"] h2,
+
+    [data-testid="stSidebar"] h2,
     [data-testid="stSidebar"] h3 {
         color: #f8fafc;
         letter-spacing: -0.01em;
@@ -181,19 +142,25 @@ st.markdown("""
 
     [data-testid="stSidebar"] .stCaption {
         color: #94a3b8;
-    }       
-
-    [data-testid="stSidebar"] {
-        background: #0f172a;
-        border-right: 1px solid rgba(148, 163, 184, 0.12);
     }
 
-    [data-testid="stSidebar"] .block-container {
-        padding-top: 1.5rem;
+    div[data-testid="stTabs"] {
+        margin-top: 0.2rem;
     }
 
-    div[data-testid="stTabs"] button {
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        margin-bottom: 0.6rem;
+        gap: 1rem;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab"] {
         font-weight: 600;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab-panel"] {
+        padding-top: 0 !important;
     }
 
     div[data-testid="stButton"] > button {
@@ -201,18 +168,31 @@ st.markdown("""
         font-weight: 700;
     }
 
+    .result-box {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(17, 24, 39, 0.66) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
     @media (max-width: 768px) {
-        .main-title {
-            font-size: 2.1rem;
+        .hero-card {
+            padding: 1.35rem 1rem 1.1rem 1rem;
+            border-radius: 18px;
         }
 
-        .project-sub {
-            font-size: 0.98rem;
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subline {
+            font-size: 0.96rem;
+            max-width: 100%;
         }
     }
-    </style>
-    """, unsafe_allow_html=True)
-
+</style>
+""", unsafe_allow_html=True)
 
 model = load_model()
 
@@ -303,63 +283,79 @@ tabs = st.tabs(["📧 Email Analysis", "💬 SMS Analysis", "🔗 URL Heuristics
 
 for i, mode in enumerate(["email", "sms", "url"]):
     with tabs[i]:
-        col1, col2 = st.columns([1.5, 1])
+        if mode == "email":
+            st.markdown("### Input Text (Email)")
+            st.caption("Paste email content to test the current phishing model.")
+            user_data = st.text_area(
+                "Input Text (Email)",
+                height=220,
+                placeholder="Paste email content to test the model...",
+                label_visibility="collapsed"
+            )
 
-        with col1:
-            if mode == "email":
-                user_data = st.text_area(
-                    "Input Text (Email)",
-                    height=200,
-                    placeholder="Paste email content to test the model..."
-                )
-            elif mode == "sms":
-                user_data = st.text_input(
-                    "Input Text (SMS)",
-                    placeholder="Enter SMS text..."
-                )
-            else:
-                user_data = st.text_input(
-                    "Input URL",
-                    placeholder="https://example-site.com"
-                )
+        elif mode == "sms":
+            st.markdown("### Input Text (SMS)")
+            st.caption("Enter SMS content for phishing or spam-like screening.")
+            user_data = st.text_input(
+                "Input Text (SMS)",
+                placeholder="Enter SMS text...",
+                label_visibility="collapsed"
+            )
 
-            analyze = st.button(f"Analyze {mode.upper()}")
+        else:
+            st.markdown("### Input URL")
+            st.caption("Enter a full URL to run the current heuristic link screening.")
+            user_data = st.text_input(
+                "Input URL",
+                placeholder="https://example-site.com",
+                label_visibility="collapsed"
+            )
 
-        with col2:
-            if analyze:
-                clean_input = normalize_text(user_data) if user_data else ""
+        analyze = st.button(f"Analyze {mode.upper()}", key=f"analyze_{mode}")
 
-                if not clean_input:
-                    st.warning("Please enter some content to analyze.")
-                    st.stop()
+        if analyze:
+            clean_input = normalize_text(user_data) if user_data else ""
 
-                with st.spinner("Model processing..."):
-                    try:
-                        if mode in ["email", "sms"]:
-                            risk, reason, trust_note = analyze_text(model, clean_input, mode, get_result_reason)
-                        else:
-                            if not is_valid_url(clean_input):
-                                st.warning("Please enter a valid URL starting with http:// or https://")
-                                st.stop()
+            if not clean_input:
+                st.warning("Please enter some content to analyze.")
+                st.stop()
 
-                            risk, reason, trust_note = analyze_url(clean_input, get_result_reason)
+            with st.spinner("Model processing..."):
+                try:
+                    if mode in ["email", "sms"]:
+                        risk, reason, trust_note = analyze_text(model, clean_input, mode, get_result_reason)
+                    else:
+                        if not is_valid_url(clean_input):
+                            st.warning("Please enter a valid URL starting with http:// or https://")
+                            st.stop()
 
-                        st.plotly_chart(draw_gauge(risk), use_container_width=True)
+                        risk, reason, trust_note = analyze_url(clean_input, get_result_reason)
 
-                        result_label = get_result_label(risk)
-                        if result_label == "malicious":
-                            st.error("Result: Potential Malicious Intent")
-                        elif result_label == "suspicious":
-                            st.warning("Result: Suspicious Activity Detected")
-                        else:
-                            st.success("Result: Likely Benign / Safe")
+                    st.markdown('<div class="result-box">', unsafe_allow_html=True)
+                    st.markdown("### Analysis Result")
+                    st.plotly_chart(draw_gauge(risk), use_container_width=True)
 
-                        st.caption(reason)
-                        st.info(trust_note)
+                    result_label = get_result_label(risk)
+                    if result_label == "malicious":
+                        st.error("Result: Potential Malicious Intent")
+                    elif result_label == "suspicious":
+                        st.warning("Result: Suspicious Activity Detected")
+                    else:
+                        st.success("Result: Likely Benign / Safe")
 
-                    except Exception as e:
-                        st.error("Something went wrong while analyzing the input.")
-                        st.exception(e)
+                    st.caption(reason)
+                    st.info(trust_note)
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+                except Exception as e:
+                    st.error("Something went wrong while analyzing the input.")
+                    st.exception(e)
+        else:
+            st.markdown('<div class="result-box">', unsafe_allow_html=True)
+            st.markdown("### Analysis Result")
+            st.caption("The current result will appear here after analysis.")
+            st.info("Run the analysis to view the risk gauge, verdict, and explanation.")
+            st.markdown('</div>', unsafe_allow_html=True)
 
 
 # --- FOOTER ---
